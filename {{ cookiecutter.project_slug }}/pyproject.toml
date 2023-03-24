@@ -1,0 +1,220 @@
+{% set is_open_source = cookiecutter.open_source_license != 'Not open source' -%}[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{{ cookiecutter.project_slug }}"
+description = '{{ cookiecutter.project_short_description }}'
+readme = "README.md"
+requires-python = ">=3.9"
+{% if is_open_source %}license = "{{ cookiecutter.open_source_license }}"{% endif -%}
+keywords = [
+  "django",
+]
+authors = [
+  { name = "{{ cookiecutter.full_name }}", email = "{{ cookiecutter.email }}" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Framework :: Django :: 4",
+]
+dependencies = [
+  "django",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+  "pytest-django",
+  "pytest-sugar",
+  "pytest-asyncio",
+  "pytest-cov",
+  "pytest-xdist",
+  "bandit",
+  # "safety",
+  "django-debug-toolbar",
+  "django_coverage_plugin",
+  "coverage",
+  "darglint",
+  "django-stubs",
+  "mypy",
+  "mypy-extensions",
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings[python]",
+  "mkdocs-include-markdown-plugin",
+  "factory-boy",
+  "rich",
+  "ipython",
+  "black",
+  "isort",
+  "pyupgrade",
+  "pywatchman",
+  "django-browser-reload",
+  "docutils",
+]
+
+[project.urls]
+Documentation = "https://github.com/andrlik/django-game-catalog#readme"
+Issues = "https://github.com/andrlik/django-game-catalog/issues"
+Source = "https://github.com/andrlik/django-game-catalog"
+
+[tool.hatch.version]
+path = "{{ cookiecutter.package_name }}/core/__about__.py"
+
+[tool.hatch.envs.default]
+features = [
+  "dev"
+]
+
+[tool.hatch.envs.default.scripts]
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=game_catalog {args}"
+no-cov = "cov --no-cov {args}"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["39", "310", "311"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = ["{{ cookiecutter.package_name }}"]
+omit = [
+  "{{ cookiecutter.package_name }}/core/__about__.py",
+  "*migrations*",
+  "*tests*",
+  "*staticfiles*",
+]
+plugins = ["django_coverage_plugin"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.black]
+# https://github.com/psf/black
+target-version = ["py39"]
+line-length = 88
+color = true
+
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | migrations
+    | buck-out
+    | build
+    | dist
+    | env
+    | venv
+    | venvs
+)/
+'''
+
+[tool.isort]
+# https://github.com/timothycrosley/isort/
+add_imports = "from __future__ import annotations"
+py_version = 39
+line_length = 88
+
+known_typing = ["typing", "types", "typing_extensions", "mypy", "mypy_extensions"]
+sections = ["FUTURE", "TYPING", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+include_trailing_comma = true
+profile = "black"
+multi_line_output = 3
+indent = 4
+color_output = true
+skip_glob = "**/migrations/*.py"
+
+[tool.mypy]
+# https://mypy.readthedocs.io/en/latest/config_file.html#using-a-pyproject-toml-file
+python_version = 3.11
+pretty = true
+show_traceback = true
+color_output = true
+
+allow_redefinition = false
+check_untyped_defs = true
+disallow_any_generics = false
+disallow_incomplete_defs = true
+ignore_missing_imports = true
+implicit_reexport = false
+no_implicit_optional = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+strict_equality = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "{{ cookiecutter.package_name }}.settings"
+
+[tool.pytest.ini_options]
+# https://docs.pytest.org/en/6.2.x/customize.html#pyproject-toml
+# Directories that are not visited by pytest collector:
+testpaths = ["{{ cookiecutter.package_name }}"]
+norecursedirs = ["hooks", "*.egg", ".eggs", "dist", "build", "docs", ".tox", ".git", "__pycache__", ".venv"]
+doctest_optionflags = ["NUMBER", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL"]
+
+# Extra options:
+addopts = [
+  "--strict-markers",
+  "--tb=short",
+  "--doctest-modules",
+  "--cov-report=term-missing", "--ds={{ cookiecutter.package_name }}.settings",
+]
+
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = false
+ignore-magic = false
+ignore-semiprivate = false
+ignore-private = false
+ignore-property-decorators = false
+ignore-module = true
+ignore-nested-functions = false
+ignore-nested-classes = true
+ignore-setters = false
+fail-under = 95
+exclude = ["setup.py", "conftest.py", "manage.py", "docs", "build", "tests", "game_catalog/migrations", "game_catalog/tests"]
+ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*", "__str__", "migrations"]
+# possible values: 0 (minimal output), 1 (-v), 2 (-vv)
+verbose = 2
+quiet = false
+whitelist-regex = []
+color = true
+omit-covered-files = false
+generate-badge = "."
+badge-format = "svg"
+
+[tool.check-wheel-contents]
+ignore = ["W004"]
+
+[tool.curlylint.rules]
+image_alt = true

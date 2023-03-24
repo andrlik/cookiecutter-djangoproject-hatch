@@ -1,0 +1,14 @@
+{
+  "full_name": "Your full name here",
+  "email": "you@example.com",
+  "github_username": "yourname",
+  "project_name": "Django Package",
+  "project_slug": "{{ cookiecutter.project_name.lower()|replace(' ', '-')|replace('_', '-') }}",
+  "package_name": "{{ cookiecutter.project_name.lower()|replace(' ', '_')|replace('-', '_') }}",
+  "project_short_description": "Your project description goes here",
+  "version":"0.0.1",
+  "target_django_version": "<4.2",
+  "open_source_license": ["MIT", "BSD", "ISCL", "Apache Software License 2.0", "Not open source"],
+  "use_just": "y",
+  "use_coveralls": "y"
+}
