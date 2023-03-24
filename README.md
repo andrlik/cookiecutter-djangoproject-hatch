@@ -31,3 +31,7 @@ Then run:
 `$ cookiecutter gh:andrlik/cookiecutter-djangoproject-hatch`
 
 Answer the questions when prompted and you'll have your project skeleton!
+
+[ht]: https://hatch.pypa.io/latest/
+[mk]: https://www.mkdocs.org
+[sct]: https://github.com/adamchainz/django-startproject-templates
