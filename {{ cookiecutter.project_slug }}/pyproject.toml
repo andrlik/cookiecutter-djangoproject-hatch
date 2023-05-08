@@ -61,9 +61,9 @@ dev = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/andrlik/django-game-catalog#readme"
-Issues = "https://github.com/andrlik/django-game-catalog/issues"
-Source = "https://github.com/andrlik/django-game-catalog"
+Documentation = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}#readme"
+Issues = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/issues"
+Source = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
 
 [tool.hatch.version]
 path = "{{ cookiecutter.package_name }}/core/__about__.py"
@@ -202,7 +202,7 @@ ignore-nested-functions = false
 ignore-nested-classes = true
 ignore-setters = false
 fail-under = 95
-exclude = ["setup.py", "conftest.py", "manage.py", "docs", "build", "tests", "game_catalog/migrations", "game_catalog/tests"]
+exclude = ["setup.py", "conftest.py", "manage.py", "docs", "build", "tests", "{{ cookiecutter.package_name }}/migrations", "{{ cookiecutter.package_name }}/tests"]
 ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*", "__str__", "migrations"]
 # possible values: 0 (minimal output), 1 (-v), 2 (-vv)
 verbose = 2
